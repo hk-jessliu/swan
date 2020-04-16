@@ -1,0 +1,1 @@
+%salt ALL=(root) NOPASSWD:/usr/local/bin/salted_swan.py

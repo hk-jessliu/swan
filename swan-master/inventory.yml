@@ -1,0 +1,54 @@
+all:
+  vars:
+    ansible_python_interpreter: "/usr/bin/python3"
+    registry_fqdn: "registry02.k8s.bisdn.de"
+    registry_username: "bisdn"
+    registry_password: "759D1A62-CC6B-49BD-A2A0-FEED637535FF"
+    node_exporter_version: "v0.18.1"
+  children:
+    e6000:
+      hosts:
+        ribbon6000-1.labor2.bisdn.de:
+        ribbon6000-2.labor2.bisdn.de:
+        192.168.204.95:
+        192.168.203.70:
+        192.168.204.138:
+        192.168.203.227:
+        192.168.206.114:        
+      vars:
+        ansible_user: "rbbn"
+        ansible_password: "rbbn"
+        ansible_become_pass: "rbbn"
+        redis_image: "arm64v8/redis"
+        swan_image: "{{ registry_fqdn }}/swan:arm64"
+        install_docker: "no"
+        node_exporter_archive: "node_exporter-0.18.1.linux-arm64"
+    raspberrypi:
+      hosts:
+        172.16.250.139:
+        172.16.250.225:
+      vars:
+        ansible_user: "ubuntu"
+        redis_image: "arm64v8/redis"
+        swan_image: "{{ registry_fqdn }}/swan:arm64"
+        install_docker: "yes"
+        node_exporter_archive: "node_exporter-0.18.1.linux-arm64"
+        docker_repository: "deb [arch=arm64] https://download.docker.com/linux/ubuntu bionic stable"
+    aws:
+      hosts:
+        192.168.206.9:
+        192.168.205.69:
+        192.168.205.219:
+        192.168.204.191:
+        192.168.204.184:
+        192.168.205.170:
+        35.222.142.152:
+        ec2-3-120-224-4.eu-central-1.compute.amazonaws.com:
+        ec2-3-120-224-199.eu-central-1.compute.amazonaws.com:
+      vars:
+        ansible_user: "ubuntu"
+        redis_image: "redis"
+        swan_image: "{{ registry_fqdn }}/swan:x86-64"
+        install_docker: "yes"
+        node_exporter_archive: "node_exporter-0.18.1.linux-amd64"
+        docker_repository: "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"

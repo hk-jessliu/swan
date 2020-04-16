@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+%html
+  %head
+    %title Secure WAN
+    = csrf_meta_tags
+    = csp_meta_tag
+
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+
+  %body
+    - if session.key?(:user_id) and session[:user_id] and User.find_by_id(session[:user_id])
+      .ui.fluid.secondary.menu
+        %a.browse.item{ :id => 'menu-popup' }
+          %i.circular.chevron.left.icon
+          %i.server.icon
+  
+      .ui.sidebar.inverted.vertical.menu{ :id => 'main-menu' }
+        .ui.item
+          Welcome, 
+          = User.find(session[:user_id]).username
+          !
+          .menu
+            %a.item{ :href => edit_user_path(User.find_by_id(session[:user_id])) }
+              %i.labeled.cog.icon
+              Your profile
+            %a.active.item{ :href => logout_url, "data-method" => :delete }
+              %i.sign-out.icon
+              Logout
+          %i.flags.icon
+
+        - if Registration.any?
+          %a.ui.item{ :href => registration_path } 
+            Connected
+            %i.dot.circle.outline.icon
+        - else
+          %a.ui.item{ :href => new_registration_path } 
+            Disconnected
+            %i.circle.outline.icon
+
+      %script
+        $("#menu-popup").on("click", function() { $("#main-menu").sidebar('toggle'); });
+  
+    .ui.grid
+      .ui.two.wide.column
+      .ui.twelve.wide.column
+        = yield
+      .ui.two.wide.column
+
+    .ui.grid
+      .ui.two.wide.column
+      .ui.right.aligned.twelve.wide.column
+        %h5.ui.header
+          Visit us!
+        .ui.horizontal.small.divided.link.list
+          .item
+            %a{ :href => "https://www.bisdn.de", :target => "_blank"} www.bisdn.de
+          .item
+            = image_tag('bisdn_logo2018_rgb_transparent.png', :alt => "www.bisdn.de", :class => "ui centered mini image" )
+  
+  

@@ -1,0 +1,30 @@
+- if flash[:alert]
+  .ui.negative.message
+    %i.close.icon
+    .header= flash[:alert]
+  %script
+    $('.message').fadeOut(2000)
+- if notice
+  .ui.positive.message
+    %i.close.icon
+    .header= notice
+  %script
+    $('.message').fadeOut(2000)
+
+.ui.inverted.menu
+  .item
+    = "#{@user.firstname} #{@user.lastname} (#{@user.username})"
+
+= if @network_device and @network_device.errors.any?
+  %div{ :id => "error_explanation" }
+    %h2 
+      = pluralize(@network_device.errors.count, "error") 
+      prohibited this network device from being saved:
+    %ul
+    = @network_device.errors.full_messages.each do |message|
+      %li 
+        = message
+ 
+= render 'users/form', user: @user
+.ui.divider
+

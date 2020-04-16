@@ -1,0 +1,44 @@
+.ui.one.column.grid
+  .stretched.row
+    .column
+      .ui.raised.padded.text.container.segment
+        - if flash[:alert]
+          .ui.positive.message
+            %i.close.icon
+            .header= flash[:alert]
+        - if notice
+          .ui.positive.message
+            %i.close.icon
+            .header= notice
+          %script
+            $('.message .close').on('click', function() { $(this) .closest('.message') .transition('fade') ; }) ;
+
+        .ui.attached.text
+          %table.ui.single.line.table
+            %thead
+              %tr
+                %th{ :colspan => "2" } 
+                  %h3.ui.center.aligned.header
+                    %i.user.icon
+                    = @user.username
+            %tbody
+              %tr
+                %td.collapsing
+                  %h5.ui.right.aligned.header
+                    First name
+                %td{ :colspan => "1" } 
+                  = @user.firstname
+              %tr
+                %td.collapsing
+                  %h5.ui.right.aligned.header
+                    Last name
+                %td{ :colspan => "1" } 
+                  = @user.lastname
+
+        .ui.text
+          %i.angle.right.icon
+          = link_to 'Back', users_path
+          |
+          = link_to 'Edit', edit_user_path(@user)
+
+

@@ -1,0 +1,36 @@
+= form_with(model: registration, local: true, class: 'ui form', method: readonly ? "delete" : "post" ) do |form|
+
+  .ui.field{ "data-tooltip" => "Specify activation code, e.g., ABCDEF", "data-position" => "bottom right", "data-inverted" => "" }
+    = form.label :otp, 'Activation key'
+    = form.text_field :otp, :readonly => readonly
+
+  .ui.field{ "data-tooltip" => "Specify Secure WAN backend including http/https prefix, e.g., https://swan.b-isdn.net", "data-position" => "bottom right", "data-inverted" => "" }
+    = form.label :swan_backend, 'Secure WAN backend'
+    = form.text_field :swan_backend, :readonly => readonly
+
+  - if readonly
+    .ui.field{ "data-tooltip" => "IKE daemon in use", "data-position" => "bottom right", "data-inverted" => "" }
+      = form.label :ike_daemon, 'IKE daemon'
+      = form.text_field :ike_daemon, :readonly => readonly
+  - else
+    .ui.field{ "data-tooltip" => "Select IKE daemon", "data-position" => "bottom right", "data-inverted" => "" }
+      = form.label :ike_daemon, 'IKE daemon'
+      .ui.fluid.search.selection.dropdown{ :id => "ike_daemon" }
+        %input{ :name => "registration[ike_daemon]", :type => "hidden", :value => @registration.ike_daemon }
+        %i.dropdown.icon
+        .default.text
+          = registration.ike_daemon ? registration.ike_daemon : "Select IKE daemon"
+        .menu
+          .item{ "data-value" => "strongswan" }
+            strongswan
+          .item{ "data-value" => "libreswan" }
+            libreswan
+        %script
+          $('.ui.fluid.search.selection.dropdown').dropdown();
+  
+  .actions
+    - if readonly
+      = form.submit 'Disconnect', :action => '/registration', :method => 'delete', :class => "compact ui orange submit button"
+    - else
+      = form.submit 'Connect', :action => '/registration', :method => 'post', :class => "compact ui yellow submit button"
+

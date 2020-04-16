@@ -1,0 +1,58 @@
+
+.ui.one.column.grid
+  .stretched.row
+    .column
+      .ui.raised.padded.text.container.segment
+        - if flash[:alert]
+          .ui.positive.message
+            %i.close.icon
+            .header= flash[:alert]
+        - if notice
+          .ui.positive.message
+            %i.close.icon
+            .header= notice
+          %script
+            $('.message .close').on('click', function() { $(this) .closest('.message') .transition('fade') ; }) ;
+
+        .ui.attached.message
+          .ui.two.column.stackable.center.aligned.grid
+            .stretched.row
+              .left.aligned.column
+                .header Users
+                %p
+                  All registered users.
+              .right.aligned.column
+                %p
+
+        .ui.divided.items
+          - @users.order(:username).each do |user|
+            .item
+              .ui.mini.image
+                = image_tag 'user_settings.svg'
+              .middle.aligned.content
+                .header
+                  = user.username
+                .meta
+                  = user.firstname
+                  = user.lastname
+              .ui.right.main.menu
+                %a{:class => "bug popup icon item", :href => user_path(user) } 
+                  %i.eye.icon
+                %a{:class => "bug popup icon item", :href => edit_user_path(user) } 
+                  %i.edit.icon
+                %a{:class => "bug popup icon item", :href => user_path(user), "data-method" => "delete", "data-confirm" => 'Are you sure?' } 
+                  %i.delete.icon
+
+          .item
+            .middle.aligned.content
+              .header
+                Add user ...
+              .meta 
+                Create new user.
+            .ui.right.main.menu
+              %a{:class => "bug popup icon item", :href => new_user_path } 
+                %i.plus.icon
+  
+
+ 
+

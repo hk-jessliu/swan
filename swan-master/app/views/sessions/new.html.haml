@@ -1,0 +1,31 @@
+
+.ui.one.column.grid
+  .stretched.row
+    .column
+      %p
+  .stretched.row
+    .column
+      .ui.raised.padded.text.container.segment
+        - if flash[:alert]
+          .ui.negative.message
+            .i.close.icon
+            .header= flash[:alert]
+        
+        .ui.attached.message
+          .header
+            Welcome to Secure WAN!
+          %p
+            Please login to proceed.
+        
+        %form{ :action => '/login', :method => 'post', :class => 'ui form attached fluid segment' }
+          .two.fields
+            .field
+              = label_tag :username, 'Username:'
+              = text_field_tag :username, params['username']
+            .field
+              = label_tag :password, 'Password:'
+              = password_field_tag :password, params['password']
+            = hidden_field_tag :authenticity_token, form_authenticity_token
+          = submit_tag "Login", :class => 'ui yellow submit button'
+      
+    

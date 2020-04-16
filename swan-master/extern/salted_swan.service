@@ -1,0 +1,22 @@
+[Unit]
+Description=salted_swan.py
+After=network.target
+Requires=network.target
+
+[Service]
+Type=simple
+Environment=REDIS_HOST=127.0.0.1
+Environment=REDIS_PORT=6379
+Environment=REDIS_CHAN=swan.events
+Environment=LOGLEVEL=debug
+Environment=TIMEOUT=4
+Environment=RAILS_SWAN_KEY_PATH=/var/lib/swan/minion.pub
+Environment=SALT_MINION_KEY_PATH=/etc/salt/pki/minion/minion.pub
+Environment=SALT_MINION_CONF_PATH=/etc/salt/minion.d/swan.conf
+Environment=SALT_MINION_KEY_LENGTH=2048
+ExecStartPre=/usr/local/sbin/salted_swan.py get_key
+ExecStart=/usr/local/sbin/salted_swan.py
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target

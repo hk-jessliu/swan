@@ -1,0 +1,18 @@
+# Copy salted_spoofy.py to /usr/local/bin and 
+# create a file in /etc/sudoers.d named "swan"
+# with the following content:
+
+# Cmnd alias specification
+%salt ALL=(ALL) NOPASSWD: /usr/local/bin/salted_swan.py
+
+
+# Note! 
+#
+# 1. The last matching entry in the sudoers file will be 
+#    evaluated for a user. If this is the "root ALL=(ALL) ALL
+#    entry, sudo will request the password, even if the
+#    salted_swan.py entry exists
+#
+# 2. You may want to use "Defaults !requiretty" as configuration
+#    option. However, this only applies, if the distribution
+#    is enforcing this.

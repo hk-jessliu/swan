@@ -1,0 +1,133 @@
+---
+- hosts: all
+  tasks:
+    - name: add Docker’s official GPG key and adding the apt repo
+      become: yes
+      when: install_docker == "yes"
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: add official docker repository to apt sources
+      become: yes
+      when: install_docker == "yes"
+      apt_repository:
+        repo: "{{ docker_repository }}"
+
+    - name: update apt cache and install required packages (including docker)
+      become: yes
+      when: install_docker == "yes"
+      apt:
+        update_cache: yes
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+
+    - name: "add the user {{ ansible_user_id }} to the group 'docker'"
+      become: yes
+      user:
+        name: "{{ ansible_user_id }}"
+        groups: docker
+        append: yes
+
+    - name: Reset ssh connection to allow user changes to affect 'current login user'
+      meta: reset_connection
+
+    - name: "ensure hostname is resolvable from /etc/hosts"
+      become: yes
+      lineinfile:
+        path: "/etc/hosts"
+        line: "127.0.3.1 {{ ansible_facts['nodename'] }}"
+
+    - name: download salt install script
+      get_url:
+        url: https://bootstrap.saltstack.com
+        dest: ./install_salt.sh
+        mode: "0700"
+
+    - name: install salt
+      become: yes
+      shell: "./install_salt.sh -x python3"
+
+    - name: install needed packages
+      become: yes
+      package:
+        name:
+          - python3-pip
+
+    - name: install needed python dependencies
+      pip:
+        name:
+          - docker
+
+    - name: install redis and docker python module for root user
+      become: yes
+      become_user: root
+      pip:
+        name:
+          - redis
+          - docker
+
+    - name: "login to private docker registry {{ registry_fqdn }}"
+      docker_login:
+        registry_url: "https://{{ registry_fqdn }}/v2/"
+        username: "{{ registry_username }}"
+        password: "{{ registry_password }}"
+
+    - name: start redis container
+      docker_container:
+        name: redis
+        image: "{{ redis_image }}"
+        state: started
+        restart_policy: always
+        pull: yes
+        ports:
+          - "127.0.0.1:6379:6379"
+
+    - name: install salted_swan python module
+      become: yes
+      copy:
+        src: "./extern/salted_swan.py"
+        dest: "/usr/local/sbin/salted_swan.py"
+        owner: root
+        group: root
+        mode: "0700"
+
+    - name: create salted_swan.service
+      become: yes
+      copy:
+        src: "./extern/salted_swan.service"
+        dest: "/lib/systemd/system/salted_swan.service"
+
+    - name: enable and start salted_swan.service
+      become: yes
+      service:
+        name: salted_swan
+        state: started
+        enabled: yes
+
+    - name: Create directory /var/lib/swanbox
+      become: yes
+      become_user: root
+      file:
+        path: /var/lib/swanbox
+        state: directory
+        mode: '0755'
+    
+    - name: start swan container
+      docker_container:
+        name: swan
+        image: "{{ swan_image }}"
+        state: started
+        restart_policy: always
+        pull: yes
+        ports:
+          - "80:3000"
+        links:
+          - "redis:redis"
+        volumes:
+          - "/etc/salt/pki/minion/minion.pub:/salt/minion.pub"
+          - "/var/lib/swanbox:/swan/db/production"
+        env:
+          IKE_DAEMON: libreswan

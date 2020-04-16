@@ -1,0 +1,1 @@
+env RAILS_SWAN_KEY_PATH=/tmp/rails/swan/minion.pub SALT_MINION_KEY_PATH=/tmp/salt/pki/minion.d/minion.pub SALT_MINION_CONF_PATH=/tmp/salt/minion.d/swan.conf SALT_MINION_KEY_LENGTH=2048 python3 salted_swan.py

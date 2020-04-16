@@ -1,0 +1,26 @@
+
+<div class='ui one column grid'>
+  <div class='stretched row'>
+    <div class='column'>
+      <div class='ui raised padded text container segment'>
+
+        <div class='ui attached message'>
+          <div class='header'>
+            Sign-Up to Spoofy!
+          </div>
+          <p>
+          Fill in the form below to get started.
+          </p>
+        </div>
+
+        <%= render 'form', user: @user %>
+
+        <div>
+        <%= link_to 'Back to Login', users_path %>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+

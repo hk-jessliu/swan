@@ -1,0 +1,46 @@
+---
+- hosts: all
+  tasks:
+    - name: download node_exporter
+      get_url:
+        url: "https://github.com/prometheus/node_exporter/releases/download/{{ node_exporter_version }}/{{ node_exporter_archive }}.tar.gz"
+        dest: "/tmp/{{ node_exporter_archive }}.tar.gz"
+
+    - name: unarchive node_exporter
+      unarchive:
+        src: "/tmp/{{ node_exporter_archive }}.tar.gz"
+        dest: "/tmp/"
+        remote_src: yes
+
+    - name: copy node_exporter to /usr/sbin
+      become: yes
+      copy:
+        src: "/tmp/{{ node_exporter_archive }}/node_exporter"
+        dest: /usr/sbin/node_exporter
+        mode: 0700
+        owner: root
+        group: root
+        remote_src: yes
+
+    - name: create node_exporter systemd service file
+      become: yes
+      copy:
+        dest: /lib/systemd/system/node_exporter.service
+        content: |
+          [Unit]
+          Description=Node Exporter
+
+          [Service]
+          ExecStart=/usr/sbin/node_exporter
+
+          [Install]
+          WantedBy=multi-user.target
+        owner: root
+        group: root
+
+    - name: enable and start node_exporter.service
+      become: yes
+      service:
+        name: node_exporter
+        state: started
+        enabled: yes

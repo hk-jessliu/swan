@@ -1,0 +1,22 @@
+---
+- hosts: all
+  tasks:
+    - name: start prometheus container
+      docker_container:
+        name: prometheus
+        image: prom/prometheus
+        state: started
+        restart_policy: always
+        pull: yes
+
+    - name: start grafana container
+      docker_container:
+        name: grafana
+        image: grafana/grafana
+        state: started
+        restart_policy: always
+        pull: yes
+        links:
+          - "prometheus:prometheus"
+        ports:
+          - "3000:3000"

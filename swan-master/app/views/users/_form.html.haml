@@ -1,0 +1,24 @@
+= form_with(model: user, local: true, class: 'ui form', id: "user_#{user.username}_form", method: user.username.blank? ? "post" : "put") do |form|
+
+  .ui.field{ "data-tooltip" => "Your first name", "data-position" => "bottom right", "data-inverted" => "" }
+    = form.label :firstname, 'First name'
+    = form.text_field :firstname, :value => user.firstname ? user.firstname : ""
+
+  .ui.field{ "data-tooltip" => "Your last name", "data-position" => "bottom right", "data-inverted" => "" }
+    = form.label :lastname, 'Last name'
+    = form.text_field :lastname, :value => user.lastname ? user.lastname : ""
+
+  .ui.field{ "data-tooltip" => "Username", "data-position" => "bottom right", "data-inverted" => "" }
+    = form.label :username, 'Username'
+    = form.text_field :username, :readonly => user.username ? true : false, :value => user.username ? user.username : ""
+
+  .ui.field{ "data-tooltip" => "Type your password", "data-position" => "bottom right", "data-inverted" => "" }
+    = form.label :password, 'Password'
+    = form.password_field :password, :placeholder => "******"
+
+  .ui.field{ "data-tooltip" => "Retype your password", "data-position" => "bottom right", "data-inverted" => "" }
+    = form.label :password_confirmation, 'Password (confirmation)'
+    = form.password_field :password_confirmation
+
+  .actions
+    = form.submit 'Save', :class => "compact ui yellow submit button"

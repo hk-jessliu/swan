@@ -1,0 +1,24 @@
+production:
+  environment: production
+  default_swan_backend: 'https://swan.b-isdn.net'
+  path_swan_activate: '/activate'
+  path_swan_deactivate: '/deactivate'
+  salt_minion_key_path: <%= ENV.fetch("SALT_MINION_KEY_PATH") { '/var/lib/swan/minion.pub' } %>
+  ike:
+    daemon: <%= ENV.fetch("IKE_DAEMON") { 'strongswan' } %>
+  redis: 
+    channel: <%= ENV.fetch("REDIS_CHAN") { "swan.events" } %>
+    host: <%= ENV.fetch("REDIS_HOST") { "127.0.0.1" } %>
+    port: <%= ENV.fetch("REDIS_PORT") { "6379" } %>
+development:
+  environment: sandbox
+  default_swan_backend: 'http://localhost:3000'
+  path_swan_activate: '/activate'
+  path_swan_deactivate: '/deactivate'
+  salt_minion_key_path: <%= ENV.fetch("SALT_MINION_KEY_PATH") { '/var/lib/swan/minion.pub' } %>
+  ike:
+    daemon: <%= ENV.fetch("IKE_DAEMON") { 'strongswan' } %>
+  redis: 
+    channel: <%= ENV.fetch("REDIS_CHAN") { "swan.events" } %>
+    host: <%= ENV.fetch("REDIS_HOST") { "127.0.0.1" } %>
+    port: <%= ENV.fetch("REDIS_PORT") { "6379" } %>

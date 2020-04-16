@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  otp: MyString
+  access_token: MyString
+  swan_backend: MyString
+  salt_master: MyString
+
+two:
+  name: MyString
+  otp: MyString
+  access_token: MyString
+  swan_backend: MyString
+  salt_master: MyString
